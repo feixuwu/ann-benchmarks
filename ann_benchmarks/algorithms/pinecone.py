@@ -12,7 +12,7 @@ class PineCone(BaseANN):
         pinecone.init(api_key="", environment="")
 
     def fit(self, X):
-        print("---create index")
+        
         try:
             pinecone.delete_index(self.index_name)
         except:
@@ -21,12 +21,13 @@ class PineCone(BaseANN):
             print("----delete index finish")
 
         pinecone.create_index(self.index_name, dimension=X.shape[1], metric={"angular": "cosine", "euclidean": "euclidean"}[self.metric])
+        print("---create index success")
         self.index = pinecone.Index(self.index_name)
 
-        print("---insert vector")
+        print("---insert vector, todo:batch")
         for i, v in enumerate(X):
             self.index.upsert([
-                (i, v)
+                (str(i), v.tolist())
             ])
 
     def set_query_arguments(self, ef):
