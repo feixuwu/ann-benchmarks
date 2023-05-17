@@ -29,6 +29,12 @@ class Redisearch(BaseANN):
         print("Connecting to Redis...")
         self.redis = Redis(host="localhost", port=6379, decode_responses=False)
 
+        args = [
+            "flushdb",
+        ]
+        print("clean data :", args)
+        self.redis.execute_command(*args)
+
         # Create index
         args = [
             "FT.CREATE",
