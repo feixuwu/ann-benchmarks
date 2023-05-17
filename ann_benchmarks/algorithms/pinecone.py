@@ -40,11 +40,16 @@ class PineCone(BaseANN):
         self.ef = ef
 
     def query(self, v, n):
-        return self.index.query(
+        res = self.index.query(
         vector=v.tolist(),
         top_k=n,
         include_values=True
         )
+
+        res_list = []
+        for result_op in res["matches"]:
+            res_list.append((int(result_op["id"]), float(result_op["score"])))
+        return res_list
 
     def __str__(self):
         return f"PineCone(M={self.M}, ef={self.ef})"
