@@ -25,10 +25,16 @@ class PineCone(BaseANN):
         self.index = pinecone.Index(self.index_name)
 
         print("---insert vector, todo:batch")
+        data_list=[]
         for i, v in enumerate(X):
-            self.index.upsert([
-                (str(i), v.tolist())
-            ])
+            data_list.append((str(i), v.tolist() ))
+            if len(data_list) == 1000:
+                self.index.upsert(data_list)
+                data_list = []
+        
+        if len(data_list) > 0:
+            self.index.upsert(data_list)
+            
 
     def set_query_arguments(self, ef):
         self.ef = ef
