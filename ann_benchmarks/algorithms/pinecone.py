@@ -18,7 +18,7 @@ class PineCone(BaseANN):
         finally:
             print("----delete index finish")
 
-        pinecone.create_index(self.index_name, dimension=X.shape[1], metric=self.metric)
+        pinecone.create_index(self.index_name, dimension=X.shape[1], metric={"angular": "cosine", "euclidean": "euclidean"}[self.metric])
         self.index = pinecone.Index(self.index_name)
 
         print("---insert vector")
