@@ -9,14 +9,19 @@ class PineCone(BaseANN):
         self.ef_construction = 500
         self.M = M
         self.index_name = "ann"
-        pinecone.init(api_key="45deb16a-4b38-40ef-92d7-ec7c05e92285", environment="us-central1-gcp")
+        pinecone.init(api_key="", environment="")
 
     def fit(self, X):
-        print("create index")
-        pinecone.delete_index(self.index_name)
-        self.index = pinecone.create_index(self.index_name, dimension=X.shape[1], metric=self.metric)
-        
-        print("insert vector")
+        print("---create index")
+        try:
+            pinecone.delete_index(self.index_name)
+        finally:
+            print("----delete index finish")
+
+        pinecone.create_index(self.index_name, dimension=X.shape[1], metric=self.metric)
+        self.index = pinecone.Index(self.index_name)
+
+        print("---insert vector")
         for i, v in enumerate(X):
             self.index.upsert([
                 (i, v)
