@@ -15,6 +15,8 @@ class PineCone(BaseANN):
         print("---create index")
         try:
             pinecone.delete_index(self.index_name)
+        except:
+            print("----no index exist")
         finally:
             print("----delete index finish")
 
