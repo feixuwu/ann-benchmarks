@@ -35,7 +35,7 @@ class PineCone(BaseANN):
 
     def query(self, v, n):
         return self.index.query(
-        vector=v,
+        vector=v.tolist(),
         top_k=n,
         include_values=True
         )
