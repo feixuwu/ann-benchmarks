@@ -9,7 +9,8 @@ class PineCone(BaseANN):
         self.metric = metric
         self.ef_construction = 500
         self.M = M
-        self.index_name = "ann"
+        self.index_name = "categorical_vector_idx"
+        self.table_name = "default.myscale_test"
         self.client = clickhouse_connect.get_client(
             host='',
             port=8443,
@@ -20,34 +21,47 @@ class PineCone(BaseANN):
     def fit(self, X):
         
         print("create table------")
-        sql="""CREATE TABLE default.myscale_categorical_search
+        sql=f"""CREATE TABLE {self.table_name}
             (
                 id    UInt32,
                 data  Array(Float32),
-                CONSTRAINT check_length CHECK length(data) = self.M
+                CONSTRAINT check_length CHECK length(data) = {self.M}
             )
             ENGINE = MergeTree ORDER BY id"""
         
-
+        print("---try create table:", sql)
         self.client.command(sql)
+        print("---create table success")
 
-        
-        print("---insert vector")
+        print("-----try insert data")
         data_list=[]
-        for i, v in enumerate(X):
-            sql = """INSERT INTO default.myscale_categorical_search
-                values(i, v.tolist() ) """
-            self.client.command(sql)
+        sql = f"INSERT INTO {self.table_name} (id, data) VALUES"
+        #values = ','.join(client.escape((name, age)) for name, age in data)
 
+        for i, v in enumerate(X):
+            data_list.append((i, v.tolist()))
+            if len(data_list) == 1000:
+                values = sql + ','.join(self.client.escape((id, data)) for id, data in data_list)
+                insert_query = sql + ' {}'.format(values)
+                print(insert_query)
+                self.client.execute(insert_query)
+            
+        if len(data_list) > 0:
+                values = sql + ','.join(self.client.escape((id, data)) for id, data in data_list)
+                insert_query = sql + ' {}'.format(values)
+                print(insert_query)
+                self.client.execute(insert_query)
         
         print("-----build index")
-        self.client.command("""
-            ALTER TABLE default.myscale_categorical_search
-                ADD VECTOR INDEX categorical_vector_idx data
+        self.client.command(f"""
+            ALTER TABLE {self.table_name}
+                ADD VECTOR INDEX {self.index_name} data
                 TYPE MSTG
             """)
         
-        get_index_status="SELECT status FROM system.vector_indices WHERE table='myscale_categorical_search'"
+        print("-----build success")
+        
+        get_index_status=f"SELECT status FROM system.vector_indices WHERE table='{self.table_name}'"
         while self.client.command(get_index_status) != 'Built':
             time.sleep(3)
             
@@ -56,13 +70,12 @@ class PineCone(BaseANN):
         self.ef = ef
 
     def query(self, v, n):
-        sql="""
+        sql=f"""
             SELECT id, date, 
-                distance(data, {target_row_data}) as dist FROM default.myscale_categorical_search ORDER BY dist LIMIT 10
+                distance(data, {v.tolist()}) as dist FROM default.myscale_categorical_search ORDER BY dist LIMIT {n}
             """
         res  = self.client.command(sql)
         res_list = []
-        
         for res_id_dis in res.result_rows:
             res_list.append((res_id_dis[0], res_id_dis[1]))
 
