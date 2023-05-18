@@ -9,7 +9,7 @@ class PineCone(BaseANN):
         self.ef_construction = 500
         self.M = M
         self.index_name = "ann"
-        pinecone.init(api_key="", environment="")
+        pinecone.init(api_key="45deb16a-4b38-40ef-92d7-ec7c05e92285", environment="us-central1-gcp")
 
     def fit(self, X):
         
