@@ -1,7 +1,7 @@
 float:
   any:
 
-    pinecone:
+    myscale:
       docker-tag: ann-benchmarks-redisearch
       module: ann_benchmarks.algorithms.myscale
       constructor: MyScale
@@ -11,8 +11,26 @@ float:
           arg-groups: [[4, 8, 12, 16, 24, 36, 48, 64, 96]]
           query-args: [[10, 20, 40, 80, 120, 200, 400, 600, 800]]
 
- 
+    pinecone:
+      docker-tag: ann-benchmarks-redisearch
+      module: ann_benchmarks.algorithms.pinecone
+      constructor: PineCone
+      base-args: ["@metric"]
+      run-groups:
+        redisearch:
+          arg-groups: [[4, 8, 12, 16, 24, 36, 48, 64, 96]]
+          query-args: [[10, 20, 40, 80, 120, 200, 400, 600, 800]]
 
+    redisearch:
+      docker-tag: ann-benchmarks-redisearch
+      module: ann_benchmarks.algorithms.redisearch
+      constructor: Redisearch
+      base-args: ["@metric"]
+      run-groups:
+        redisearch:
+          arg-groups: [[4, 8, 12, 16, 24, 36, 48, 64, 96]]
+          query-args: [[10, 20, 40, 80, 120, 200, 400, 600, 800]]
+  
   angular:
     vamana(diskann):
       docker-tag: ann-benchmarks-diskann
