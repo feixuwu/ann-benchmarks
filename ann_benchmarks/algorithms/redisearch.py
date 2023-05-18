@@ -62,7 +62,7 @@ class Redisearch(BaseANN):
         p = self.redis.pipeline(transaction=False)
         for i, v in enumerate(X):
             p.execute_command("HSET", i, self.field_name, v.tobytes())
-            if i % 1000 == 999:
+            if i % 10000 == 9999:
                 p.execute()
                 p.reset()
         p.execute()

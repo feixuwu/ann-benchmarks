@@ -28,7 +28,7 @@ class PineCone(BaseANN):
         data_list=[]
         for i, v in enumerate(X):
             data_list.append((str(i), v.tolist() ))
-            if len(data_list) == 1000:
+            if len(data_list) == 10000:
                 self.index.upsert(data_list)
                 data_list = []
         

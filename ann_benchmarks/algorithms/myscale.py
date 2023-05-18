@@ -24,7 +24,7 @@ class MyScale(BaseANN):
 
     def fit(self, X):
         
-        print("create table------")
+        #print("create table------")
         exists_query = f"EXISTS TABLE {self.table_name}"
         table_exists = self.client.command(exists_query)
 
@@ -34,9 +34,9 @@ class MyScale(BaseANN):
 
             # 执行删除表操作
             self.client.command(drop_query)
-            print(f"表 {self.table_name} 删除成功")
-        else:
-            print(f"表 {self.table_name} 不存在")
+            #print(f"表 {self.table_name} 删除成功")
+        #else:
+            #print(f"表 {self.table_name} 不存在")
             
         sql=f"""CREATE TABLE {self.table_name}
             (
@@ -46,18 +46,18 @@ class MyScale(BaseANN):
             )
             ENGINE = MergeTree ORDER BY id"""
         
-        print("---try create table:", sql)
+        #print("---try create table:", sql)
         self.client.command(sql)
-        print("---create table success")
+        #print("---create table success")
 
-        print("-----try insert data")
+        #print("-----try insert data")
         data_list=[]
         sql = f"INSERT INTO {self.table_name} (id, data) VALUES"
         #values = ','.join(client.escape((name, age)) for name, age in data)
 
         for i, v in enumerate(X):
             data_list.append([i, v.tolist()])
-            if len(data_list) == 1:
+            if len(data_list) == 10000:
                 self.client.insert(self.table_name, data_list, column_names=['id', 'data'])
                 data_list = []
             
@@ -65,16 +65,16 @@ class MyScale(BaseANN):
                 self.client.insert(self.table_name, data_list, column_names=['id', 'data'])
                 data_list = []
         
-        print("-----build index")
+        #print("-----build index")
         self.client.command(f"""
             ALTER TABLE {self.table_name}
                 ADD VECTOR INDEX {self.index_name} data
                 TYPE MSTG
             """)
         
-        print("-----build success")
-        
-        get_index_status=f"SELECT status FROM system.vector_indices WHERE table='{self.table_name}'"
+        #print("-----create index success")
+        get_index_status=f"SELECT status FROM system.vector_indices WHERE table='{self.table_name.split('.')[1]}'"
+        #print("----query index status:", get_index_status)
         while self.client.command(get_index_status) != 'Built':
             time.sleep(3)
             
@@ -84,13 +84,13 @@ class MyScale(BaseANN):
 
     def query(self, v, n):
         sql=f"""
-            SELECT id, date, 
-                distance(data, {v.tolist()}) as dist FROM default.myscale_categorical_search ORDER BY dist LIMIT {n}
+            SELECT id,
+                distance(data, {v.tolist()}) as dist FROM {self.table_name} ORDER BY dist LIMIT {n}
             """
-        res  = self.client.command(sql)
+        res  = self.client.query(sql)
         res_list = []
         for res_id_dis in res.result_rows:
-            res_list.append((res_id_dis[0], res_id_dis[1]))
+            res_list.append(res_id_dis[0])
 
         return res_list
 
