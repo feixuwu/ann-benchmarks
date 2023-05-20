@@ -77,7 +77,7 @@ class Zilliz(BaseANN):
     def query(self, v, n):
         search_params = {
             "metric_type": {"angular": "IP", "euclidean": "L2"}[self.metric],
-            "level":self.level
+            "params":{"level":self.level}
         }
         res = self.collection.search(
             data = [v.tolist()],
