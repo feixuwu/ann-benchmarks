@@ -16,7 +16,7 @@ class Zilliz(BaseANN):
             uri='https://in01-626c35782a70b5e.gcp-us-west1.vectordb.zillizcloud.com:443', # Endpoint URI obtained from Zilliz Cloud
             secure=True,
             user='db_admin', # Username specified when you created this database
-            password='Fuckcsdn100ci'
+            password=''
         )
 
     def fit(self, X):
