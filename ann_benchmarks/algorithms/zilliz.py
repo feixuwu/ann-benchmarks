@@ -89,4 +89,4 @@ class Zilliz(BaseANN):
         return res[0].ids
     
     def __str__(self):
-        return f"Zilliz(M={self.M}, level={self.ef})"
+        return f"Zilliz(level={self.level})"
