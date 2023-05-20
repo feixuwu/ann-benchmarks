@@ -22,7 +22,8 @@ class Zilliz(BaseANN):
     def fit(self, X):
         
         try:
-            self.collection = Collection(self.collection_name)     
+            self.collection = Collection(self.collection_name)    
+            self.collection.release() 
             self.collection.drop_index()
             utility.drop_collection(self.collection_name)
         except:
