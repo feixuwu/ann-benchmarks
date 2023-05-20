@@ -1,6 +1,5 @@
 float:
-  any:
-  
+  euclidean:
     redisearch:
       docker-tag: ann-benchmarks-redisearch
       module: ann_benchmarks.algorithms.redisearch
@@ -10,16 +9,3 @@ float:
         redisearch:
           arg-groups: [[4, 8, 12, 16, 24, 36, 48, 64, 96]]
           query-args: [[10, 20, 40, 80, 120, 200, 400, 600, 800]]
-
-    
-  angular:
-    vearch:
-      docker-tag: ann-benchmarks-vearch
-      module: ann_benchmarks.algorithms.vearch
-      constructor: VearchIndex
-      base-args: ["@metric"]
-      run-groups:
-        vearch1:
-          args: [[2048], [0.2], [1, 2]]
-          query-args: [[1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 28, 31, 34, 37, 40, 45, 50, 55, 60, 65, 75, 90, 115, 130, 150, 170, 200, 230, 250, 300, 400, 500, 800], [3, 5, 10]]
-

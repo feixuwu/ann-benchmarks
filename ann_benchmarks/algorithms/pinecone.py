@@ -4,10 +4,8 @@ from .base import BaseANN
 
 
 class PineCone(BaseANN):
-    def __init__(self, metric, M):
+    def __init__(self, metric, nouse):
         self.metric = metric
-        self.ef_construction = 500
-        self.M = M
         self.index_name = "ann"
         pinecone.init(api_key="", environment="us-central1-gcp")
 
@@ -30,13 +28,14 @@ class PineCone(BaseANN):
             if len(data_list) == 1000:
                 self.index.upsert(data_list)
                 data_list = []
+                break
         
         if len(data_list) > 0:
             self.index.upsert(data_list)
             
 
-    def set_query_arguments(self, ef):
-        self.ef = ef
+    def set_query_arguments(self, nouse):
+        pass
 
     def query(self, v, n):
         res = self.index.query(
@@ -51,4 +50,4 @@ class PineCone(BaseANN):
         return res_list
 
     def __str__(self):
-        return f"PineCone(M={self.M}, ef={self.ef})"
+        return f"PineCone()"

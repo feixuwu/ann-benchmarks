@@ -5,10 +5,8 @@ from .base import BaseANN
 
 
 class MyScale(BaseANN):
-    def __init__(self, metric, M):
+    def __init__(self, metric, nouse):
         self.metric = metric
-        self.ef_construction = 500
-        self.M = M
         self.index_name = "categorical_vector_idx"
         self.table_name = "default.myscale_test"
         
@@ -79,13 +77,14 @@ class MyScale(BaseANN):
             time.sleep(3)
             
 
-    def set_query_arguments(self, ef):
-        self.ef = ef
+    def set_query_arguments(self, alpha):
+        self.alpha = alpha
 
     def query(self, v, n):
+        par = f"\'alpha={self.alpha}\'"
         sql=f"""
             SELECT id,
-                distance(data, {v.tolist()}) as dist FROM {self.table_name} ORDER BY dist LIMIT {n}
+                distance({par})(data, {v.tolist()}) as dist FROM {self.table_name} ORDER BY dist LIMIT {n}
             """
         res  = self.client.query(sql)
         res_list = []
@@ -95,7 +94,7 @@ class MyScale(BaseANN):
         return res_list
 
     def __str__(self):
-        return f"MyScale(M={self.M}, ef={self.ef})"
+        return f"MyScale(alpha={self.alpha})"
     
         
         
