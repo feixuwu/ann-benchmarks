@@ -1,6 +1,17 @@
 float:
   euclidean:
 
+    myscalenhnsw:
+      docker-tag: ann-benchmarks-myscale
+      module: ann_benchmarks.algorithms.myscale
+      constructor: MyScaleHNSW
+      base-args: ["@metric"]
+      run-groups:
+        hnsw:
+          arg-groups: [[4, 24, 96]]
+          query-args: [[10, 20, 40, 80, 120, 200, 400, 600, 800]]
+
+
     myscale:
       docker-tag: ann-benchmarks-myscale
       module: ann_benchmarks.algorithms.myscale
@@ -10,4 +21,5 @@ float:
         redisearch:
           arg-groups: [[1]]
           query-args: [[1,2,3,4]]
+
           

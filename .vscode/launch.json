@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["--definitions", "algos_zilliz.yaml", "--dataset", "glove-25-angular", "--local", "--runs", "1"]
+            "args": ["--definitions", "algos_myscale.yaml", "--dataset", "gist-960-euclidean", "--local", "--runs", "1"]
         }
     ]
 }

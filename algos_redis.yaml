@@ -7,5 +7,5 @@ float:
       base-args: ["@metric"]
       run-groups:
         redisearch:
-          arg-groups: [[4, 8, 12, 16, 24, 36, 48, 64, 96]]
+          arg-groups: [[4, 24, 96]]
           query-args: [[10, 20, 40, 80, 120, 200, 400, 600, 800]]
