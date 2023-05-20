@@ -28,7 +28,7 @@ class PineCone(BaseANN):
             if len(data_list) == 1000:
                 self.index.upsert(data_list)
                 data_list = []
-                break
+                print(f"-------insert{i}")
         
         if len(data_list) > 0:
             self.index.upsert(data_list)

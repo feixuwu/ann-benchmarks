@@ -58,6 +58,7 @@ class MyScale(BaseANN):
             if len(data_list) == 10000:
                 self.client.insert(self.table_name, data_list, column_names=['id', 'data'])
                 data_list = []
+                print(f"-------insert{i}")
             
         if len(data_list) > 0:
                 self.client.insert(self.table_name, data_list, column_names=['id', 'data'])
